@@ -1,13 +1,9 @@
 Rails.application.routes.draw do
-  get "requests/index"
-  get "requests/admin"
-  get "requests/create"
-  get "request/index"
-  get "request/admin"
-  get "request/create"
+  get "up" => "rails/health#show", as: :rails_health_check
   devise_for :users
   get "home/index"
-  get "up" => "rails/health#show", as: :rails_health_check
+
+  patch "name", to: "application#update_name", as: :update_name
   get "tv", to: "requests#index"
   get "admin", to: "requests#admin"
   root "home#index"

@@ -1,6 +1,11 @@
 <h1>Simple Karaoke</h1>
-<p>Please enter your name: </p>
 
-<%= form_for :user do |f|
-    f.text_field :name 
-end %>
+<% if current_or_guest_user.name.blank? %>
+  <p>Please enter your name: </p>
+  <%= form_with url: update_name_path, method: :patch do |form| %>
+    <%= form.text_field :name, placeholder: "Enter your name" %>
+    <%= form.submit "Go" %>
+  <% end %>
+<% else %>
+  <p>ARE YOU READY TO ROCK, <%= current_or_guest_user.name %>?</p>
+<% end %>
