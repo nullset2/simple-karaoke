@@ -27,7 +27,7 @@
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
-/db/simple_karaoke_development.sqlite3
+*.sqlite3*
 
 /public/assets
 

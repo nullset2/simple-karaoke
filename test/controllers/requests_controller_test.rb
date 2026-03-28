@@ -1,18 +1,48 @@
 require "test_helper"
 
 class RequestsControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    @request = requests(:one)
+  end
+
   test "should get index" do
-    get requests_index_url
+    get requests_url
     assert_response :success
   end
 
-  test "should get admin" do
-    get requests_admin_url
+  test "should get new" do
+    get new_request_url
     assert_response :success
   end
 
-  test "should get create" do
-    get requests_create_url
+  test "should create request" do
+    assert_difference("Request.count") do
+      post requests_url, params: { request: { active: @request.active, rank: @request.rank, song_name: @request.song_name, user_id: @request.user_id } }
+    end
+
+    assert_redirected_to request_url(Request.last)
+  end
+
+  test "should show request" do
+    get request_url(@request)
     assert_response :success
+  end
+
+  test "should get edit" do
+    get edit_request_url(@request)
+    assert_response :success
+  end
+
+  test "should update request" do
+    patch request_url(@request), params: { request: { active: @request.active, rank: @request.rank, song_name: @request.song_name, user_id: @request.user_id } }
+    assert_redirected_to request_url(@request)
+  end
+
+  test "should destroy request" do
+    assert_difference("Request.count", -1) do
+      delete request_url(@request)
+    end
+
+    assert_redirected_to requests_url
   end
 end
