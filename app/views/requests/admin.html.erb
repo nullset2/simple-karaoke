@@ -1,2 +1,13 @@
-<h1>Requests#admin</h1>
-<p>Find me in app/views/requests/admin.html.erb</p>
+<h1>Admin Interface for KJs</h1>
+
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Requests" %>
+
+<div id="requests">
+  <% @requests.each do |request| %>
+    <%= render request %>
+  <% end %>
+</div>
+
+<br>

@@ -1,6 +1,10 @@
 class RequestsController < ApplicationController
   before_action :set_request, only: %i[ show edit update destroy ]
   def index
+    @requests = Request.first(4)
+  end
+
+  def admin
     @requests = Request.all
   end
 

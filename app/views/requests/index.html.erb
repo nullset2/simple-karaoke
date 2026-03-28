@@ -2,15 +2,13 @@
 
 <% content_for :title, "Requests" %>
 
-<h1>Requests</h1>
+<h1>Coming up next... <%= @requests.first&.user.name %>!</h1>
 
 <div id="requests">
-  <% @requests.each do |request| %>
+  <% @requests[1,4].each do |request| %>
     <%= render request %>
-    <p>
-      <%= link_to "Show this request", request %>
-    </p>
   <% end %>
 </div>
 
-<%= link_to "New request", new_request_path %>
+<br>
+<p> Come join us by logging into <b><%= request.base_url %></b> on your phone! </p>
