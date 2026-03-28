@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_28_195420) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_28_200401) do
+  create_table "requests", force: :cascade do |t|
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.integer "rank"
+    t.string "song_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.boolean "admin"
     t.datetime "created_at", null: false
