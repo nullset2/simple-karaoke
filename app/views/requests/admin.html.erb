@@ -10,16 +10,21 @@
   <% @requests.each_with_index do |request, i| %>
     <b><%= i+1 %>.</b>
     <%= render request %>
-    <b>Score</b>
+    <b>Score:</b>
     <%= request.rank %>
     <div>
-    <%= button_to "Rank Up", request_rank_up_path(request), params: {id: request.id }, method: :post %>
-    <%= button_to "Rank Down", request_rank_down_path(request), params: {id: request.id }, method: :post %>
+    <% if request.rank > 1 %>
+      <%= button_to "Rank Up", request_rank_up_path(request), params: {id: request.id }, method: :post %>
+    <% end %>
+    <% if i != @requests.length - 1 %>
+      <%= button_to "Rank Down", request_rank_down_path(request), params: {id: request.id }, method: :post %>
+    <% end %>
     <%= button_to "Delete", request_path(request), method: :delete, data: { confirm: "Are you sure?" } %>
     </div>
   <% end %>
 </div>
-
+<br>
+<br>
 <%= button_to "Next Song", next_path, method: :post %>
 
 <br>
