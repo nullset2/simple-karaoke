@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     post :rank_down, to: "requests#rank_down"
   end
 
+  post "next", to: "requests#next"
+
   get "tv", to: "requests#index"
   get "admin", to: "requests#admin"
   

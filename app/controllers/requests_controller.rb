@@ -1,5 +1,5 @@
 class RequestsController < ApplicationController
-  before_action :authenticate_admin, only: %i[ edit update destroy admin rank_up rank_down ]
+  before_action :authenticate_admin, only: %i[ edit update destroy admin rank_up rank_down next ]
   before_action :set_request, only: %i[ show edit update destroy rank_up rank_down ]
 
   def index
@@ -34,6 +34,11 @@ class RequestsController < ApplicationController
     @request.update!(rank: down.rank)
     down.update!(rank: tmp)
     redirect_back_or_to admin_path, notice: "Ranked down."
+  end
+
+  def next
+    Request.order(:rank)&.first&.destroy
+    redirect_back_or_to admin_path, notice: "Song has been dispatched."
   end
 
   def create
