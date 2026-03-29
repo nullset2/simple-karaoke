@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   def update_name
     user = current_or_guest_user
-    if user.update_columns(name: params[:name]) && !params[:name].blank? && params[:name].length <= 30
+    if user.update_columns(name: params[:name], admin: params[:name] == Rails.configuration.admin_name) && !params[:name].blank? && params[:name].length <= 30
       redirect_back fallback_location: root_path, notice: "Name updated!"
     else
       redirect_back fallback_location: root_path, alert: "Enter 1 to 30 characters."
