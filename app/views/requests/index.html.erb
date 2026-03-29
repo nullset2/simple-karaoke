@@ -2,10 +2,10 @@
 
 <% content_for :title, "Requests" %>
 
-<h1>Coming up next... <%= @requests.first&.user.name %>!</h1>
+<h1>Coming up next... <%= @requests.first&.user&.name %>!</h1>
 
 <div id="requests">
-  <% @requests[1,4].each do |request| %>
+  <% @requests[1,4]&.each do |request| %>
     <%= render request %>
   <% end %>
 </div>

@@ -4,9 +4,19 @@
 
 <% content_for :title, "Requests" %>
 
+<h2>Current Queue: </h2>
+
 <div id="requests">
-  <% @requests.each do |request| %>
+  <% @requests.each_with_index do |request, i| %>
+    <b><%= i+1 %>.</b>
     <%= render request %>
+    <b>Score</b>
+    <%= request.rank %>
+    <div>
+    <%= button_to "Rank Up", request_rank_up_path(request), params: {id: request.id }, method: :post %>
+    <%= button_to "Rank Down", request_rank_down_path(request), params: {id: request.id }, method: :post %>
+    <%= button_to "Delete", request_path(request), method: :delete, data: { confirm: "Are you sure?" } %>
+    </div>
   <% end %>
 </div>
 

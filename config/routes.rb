@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   patch "name", to: "application#update_name", as: :update_name
 
   get "home/index"
-  resources :requests, only: [:create]
+  resources :requests do
+    post :rank_up, to: "requests#rank_up"
+    post :rank_down, to: "requests#rank_down"
+  end
 
   get "tv", to: "requests#index"
   get "admin", to: "requests#admin"

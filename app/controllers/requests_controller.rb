@@ -1,11 +1,13 @@
 class RequestsController < ApplicationController
-  before_action :set_request, only: %i[ show edit update destroy ]
+  before_action :authenticate_admin, only: %i[ edit update destroy admin rank_up rank_down ]
+  before_action :set_request, only: %i[ show edit update destroy rank_up rank_down ]
+
   def index
-    @requests = Request.first(4)
+    @requests = Request.first(4).order(:rank)
   end
 
   def admin
-    @requests = Request.all
+    @requests = Request.all.order(:rank)
   end
 
   def show
@@ -16,6 +18,22 @@ class RequestsController < ApplicationController
   end
 
   def edit
+  end
+
+  def rank_up
+    tmp = @request.rank
+    up = Request.find_by(rank: tmp - 1)
+    @request.update!(rank: up.rank)
+    up.update!(rank: tmp)
+    redirect_back_or_to admin_path, notice: "Ranked up."
+  end
+
+  def rank_down
+    tmp = @request.rank
+    down = Request.find_by(rank: tmp + 1)
+    @request.update!(rank: down.rank)
+    down.update!(rank: tmp)
+    redirect_back_or_to admin_path, notice: "Ranked down."
   end
 
   def create
@@ -48,12 +66,19 @@ class RequestsController < ApplicationController
     @request.destroy!
 
     respond_to do |format|
-      format.html { redirect_to requests_path, notice: "Request was successfully destroyed.", status: :see_other }
+      format.html { redirect_back_or_to requests_path, notice: "Request was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
   end
 
   private
+    def authenticate_admin
+      unless current_or_guest_user.admin?
+        flash[:error] = "You must be an admin to access this section"
+        redirect_to "/"
+      end
+    end
+
     def set_request
       @request = Request.find(params.expect(:id))
     end
