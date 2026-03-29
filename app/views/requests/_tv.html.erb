@@ -1,0 +1,14 @@
+<h1>Coming up next... <%= requests.first&.user&.name %>!</h1>
+
+<h1>Song: <%= requests.first&.song_name %></h1>
+<br>
+<br>
+<br>
+<br>
+<br>
+<h4>Next:</h4>
+<div id="tv_requests">
+  <% requests[1,4]&.each do |request| %>
+    <%= render request %>
+  <% end %>
+</div>

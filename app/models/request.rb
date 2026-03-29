@@ -17,7 +17,12 @@ class Request < ApplicationRecord
       partial: "requests/admin_queue",
       locals: { requests: requests }
     )
+    tv = ApplicationController.render(
+      partial: "requests/tv",
+      locals: { requests: requests }
+    )
     ActionCable.server.broadcast("requests_channel", { html: html })
+    ActionCable.server.broadcast("tv_channel", { html: tv })
   end
 
   def assign_rank
