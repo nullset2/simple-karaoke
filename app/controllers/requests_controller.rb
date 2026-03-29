@@ -3,7 +3,7 @@ class RequestsController < ApplicationController
   before_action :set_request, only: %i[ show edit update destroy rank_up rank_down ]
 
   def index
-    @requests = Request.first(4).order(:rank)
+    @requests = Request.order(:rank).first(4)
   end
 
   def admin
