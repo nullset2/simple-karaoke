@@ -1,0 +1,202 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: karaoke-secrets
+  namespace: default
+type: Opaque
+stringData:
+  RAILS_MASTER_KEY: "REPLACE_ME"
+  SIMPLE_KARAOKE_SUPERUSER: "REPLACE_ME"
+  DATABASE_URL: "postgresql://postgres:REPLACE_ME@postgres-svc:5432/karaoke_production"
+  CACHE_DATABASE_URL: "postgresql://postgres:REPLACE_ME@postgres-svc:5432/karaoke_cache"
+  QUEUE_DATABASE_URL: "postgresql://postgres:REPLACE_ME@postgres-svc:5432/karaoke_queue"
+  CABLE_DATABASE_URL: "postgresql://postgres:REPLACE_ME@postgres-svc:5432/karaoke_cable"
+  POSTGRES_PASSWORD: "REPLACE_ME"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: default
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: REPLACE-ME
+      containers:
+        - name: postgres
+          image: postgres:16
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc
+  namespace: default
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-karaoke
+  namespace: default
+  labels:
+    app: simple-karaoke
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-karaoke
+  template:
+    metadata:
+      labels:
+        app: simple-karaoke
+    spec:
+      containers:
+        - name: simple-karaoke
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+          image: nullset2/simple-karaoke:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: RAILS_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: RAILS_MASTER_KEY
+            - name: SIMPLE_KARAOKE_SUPERUSER
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: SIMPLE_KARAOKE_SUPERUSER
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: DATABASE_URL
+            - name: CACHE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: CACHE_DATABASE_URL
+            - name: QUEUE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: QUEUE_DATABASE_URL
+            - name: CABLE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: karaoke-secrets
+                  key: CABLE_DATABASE_URL
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-karaoke-svc
+  namespace: default
+  labels:
+    app: simple-karaoke
+spec:
+  selector:
+    app: simple-karaoke
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-karaoke-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: karaoke.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: simple-karaoke-svc
+                port:
+                  number: 80

@@ -17,7 +17,11 @@ Docker build:
 
 See `Dockerfile` for more details.
 
-To deploy on production, make sure you have deployed postgres on docker first, available on port `5432` on `127.0.0.1`, and create a role `simple_karaoke` with createdb privileges.
+To deploy on production, make sure you have deployed postgres on docker first, available on port `5432` on `127.0.0.1`, and create a role `simple_karaoke` with createdb privileges. Using `psql`:
+
+```
+create role simple_karaoke with login superuser createdb password 'itsasecrettoeverybody';
+```
 
 You can run the app locally simulating production:
 
@@ -35,7 +39,7 @@ docker run -it --user root \
 
 Do not actually run as root in production.
 
-See `deploy.yaml` for more details about deploying this on Kubernetes. Deploy with: ``.
+See `deploy.yaml` for more details about deploying this on Kubernetes. Revise the manifest first and edit every necessary secret, then deploy with: `kubectl apply -f deploy.yaml`.
 
 Screenshots:
 
