@@ -3,6 +3,8 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.admin_name = ENV["SIMPLE_KARAOKE_SUPERUSER"]
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
