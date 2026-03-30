@@ -1,24 +1,13 @@
-# README
+# simple-karaoke
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Managed queue with ActionCable.
 
-Things you may want to cover:
+1. Clone repo.
+1. `cd` into repo.
+1. Run `bundle install`.
+1. Configure your superuser name in `config/environments/development.rb` or `production.rb`. Do not reveal this in production.
+1. Run `rails s`.
+1. Access `localhost:3000` and enter your superuser name, then access `/admin` to see the real time queue.
+1. Song requests can be sent from `localhost:3000`. No authentication required - but a cookie is persisted, so your position and name in the app will survive until the cookie is deleted or expires.
+1. Access `/tv` and display that in your main display to show who's currently up for singing.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
