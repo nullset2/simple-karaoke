@@ -22,7 +22,7 @@ class RequestsController < ApplicationController
 
   def rank_up
     tmp = @request.rank
-    up = Request.find_by(rank: tmp - 1)
+    up = Request.where("rank < ?", @request.rank).order(rank: :desc).first
     @request.update!(rank: up.rank)
     up.update!(rank: tmp)
     redirect_back_or_to admin_path, notice: "Ranked up."
@@ -30,7 +30,7 @@ class RequestsController < ApplicationController
 
   def rank_down
     tmp = @request.rank
-    down = Request.find_by(rank: tmp + 1)
+    down = Request.where("rank > ?", @request.rank).order(rank: :desc).first
     @request.update!(rank: down.rank)
     down.update!(rank: tmp)
     redirect_back_or_to admin_path, notice: "Ranked down."
