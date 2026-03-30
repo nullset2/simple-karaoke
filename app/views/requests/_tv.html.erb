@@ -1,14 +1,25 @@
-<h1>Coming up next... <%= requests.first&.user&.name %>!</h1>
+<div class="container-fluid vh-100 d-flex flex-column justify-content-center text-white px-5">
 
-<h1>Song: <%= requests.first&.song_name %></h1>
-<br>
-<br>
-<br>
-<br>
-<br>
-<h4>Next:</h4>
-<div id="tv_requests">
-  <% requests[1,4]&.each do |request| %>
-    <%= render request %>
-  <% end %>
+  <div class="p-5 mb-4 bg-primary bg-gradient rounded-3 text-center shadow-lg">
+    <h6 class="text-uppercase text-white-50 fw-bold ls-wider mb-2">Now Playing</h6>
+    <h1 class="display-3 mb-1">
+      <%= requests.first&.user&.name || "Nobody yet!" %>
+    </h1>
+    <p class="display-6 text-white-50">
+      🎤 <%= requests.first&.song_name || "No song queued" %>
+    </p>
+  </div>
+
+  <div>
+    <h4 class="text-uppercase text-white-50 fw-bold mb-3">Up Next</h4>
+    <div id="tv_requests" class="d-flex flex-column gap-2">
+      <% requests[1, 3]&.each_with_index do |request, i| %>
+        <div class="d-flex align-items-center bg-secondary bg-opacity-25 rounded-2 px-4 py-2">
+          <span class="text-white-50 fw-bold me-3"><%= i + 2 %>.</span>
+          <%= render request %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
 </div>

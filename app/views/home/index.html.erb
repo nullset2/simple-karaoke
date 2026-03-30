@@ -1,15 +1,28 @@
-<h1>Simple Karaoke</h1>
-<p style="color: green"><%= notice %></p>
-<% if current_or_guest_user.name.blank? %>
-  <p>Please enter your name: </p>
-  <%= form_with url: update_name_path, method: :patch do |form| %>
-    <%= form.text_field :name, placeholder: "Enter your name" %>
-    <%= form.submit "Go" %>
+<div class="container mt-4">
+  <h1 class="mb-3">SIMPLE KARAOKE</h1>
+
+  <% if notice.present? %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= notice %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   <% end %>
-<% else %>
-  <% if current_or_guest_user.admin %>
-    <p>Welcome, admin. <%= link_to "Admin Page", admin_path %></p>
+
+  <% if current_or_guest_user.name.blank? %>
+    <p class="mb-2">Please enter your name:</p>
+    <%= form_with url: update_name_path, method: :patch, class: "d-flex gap-2" do |form| %>
+      <%= form.text_field :name, placeholder: "Enter your name", class: "form-control w-auto" %>
+      <%= form.submit "Go", class: "btn btn-primary" %>
+    <% end %>
+
+  <% else %>
+    <% if current_or_guest_user.admin %>
+      <div class="alert alert-info">
+        Welcome, admin. <%= link_to "Admin Page", admin_path, class: "alert-link" %>
+      </div>
+    <% end %>
+
+    <p class="fs-5 fw-semibold">ARE YOU READY TO ROCK, <%= current_or_guest_user.name %>?</p>
+    <%= render partial: "requests/form", locals: { request: current_or_guest_user.requests.new } %>
   <% end %>
-  <p>ARE YOU READY TO ROCK, <%= current_or_guest_user.name %>?</p>
-  <%= render partial: "requests/form", locals: {request: current_or_guest_user.requests.new} %>
-<% end %>
+</div>

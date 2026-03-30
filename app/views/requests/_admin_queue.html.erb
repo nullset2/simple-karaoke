@@ -1,15 +1,30 @@
-<% requests.each_with_index do |request, i| %>
-  <b><%= i+1 %>.</b>
-  <%= render request %>
-  <b>Score:</b>
-  <%= request.rank %>
-  <div>
-  <% if request.rank > 1 %>
-    <%= button_to "Rank Up", request_rank_up_path(request), params: {id: request.id }, method: :post %>
-  <% end %>
-  <% if i != requests.length - 1 %>
-    <%= button_to "Rank Down", request_rank_down_path(request), params: {id: request.id }, method: :post %>
-  <% end %>
-  <%= button_to "Delete", request_path(request), method: :delete, data: { confirm: "Are you sure?" } %>
-  </div>
-<% end %>
+<table class="table table-bordered table-striped align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>#</th>
+      <th>Request</th>
+      <th>Score</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% requests.each_with_index do |request, i| %>
+      <tr>
+        <td class="fw-bold"><%= i + 1 %></td>
+        <td><%= render request %></td>
+        <td><%= request.rank %></td>
+        <td>
+          <div class="d-flex gap-2">
+            <% if request.rank > 1 %>
+              <%= button_to "Rank Up", request_rank_up_path(request), params: { id: request.id }, method: :post, class: "btn btn-sm btn-outline-primary" %>
+            <% end %>
+            <% if i != requests.length - 1 %>
+              <%= button_to "Rank Down", request_rank_down_path(request), params: { id: request.id }, method: :post, class: "btn btn-sm btn-outline-secondary" %>
+            <% end %>
+            <%= button_to "Delete", request_path(request), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-danger" %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

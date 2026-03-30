@@ -28,3 +28,15 @@
     50%{background-position:100% 50%}
     100%{background-position:0% 50%}
 }
+
+.outline {
+    color: white;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    text-stroke: 2px black;
+}
+
+h1 {
+    font-family: 'Cooper Black' !important;
+    @extend .outline;
+}

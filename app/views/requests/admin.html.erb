@@ -1,16 +1,22 @@
-<h1>Admin Interface for KJs</h1>
+<div class="container mt-4">
+  <h1 class="mb-3">Admin Interface for KJs</h1>
 
-<p style="color: green"><%= notice %></p>
+  <% if notice.present? %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= notice %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
 
-<% content_for :title, "Requests" %>
+  <% content_for :title, "Requests" %>
 
-<h2>Current Queue: </h2>
+  <h2 class="mb-3">Current Queue:</h2>
 
-<div id="requests">
-  <%= render partial: "requests/admin_queue", locals: { requests: @requests } %>
+  <div id="requests">
+    <%= render partial: "requests/admin_queue", locals: { requests: @requests } %>
+  </div>
+
+  <div class="mt-4">
+    <%= button_to "Next Song", next_path, method: :post, class: "btn btn-primary" %>
+  </div>
 </div>
-<br>
-<br>
-<%= button_to "Next Song", next_path, method: :post %>
-
-<br>
